@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seating Arrangement Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #f5f7fa;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            color: #1e293b;
+            margin-bottom: 8px;
+        }
+
+        .header .subtitle {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .dept-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            padding: 16px 24px;
+            background: #f8fafc;
+            border-radius: 12px;
+            margin-bottom: 32px;
+            justify-content: center;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .legend-color {
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            border: 2px solid;
+        }
+
+        .legend-color.uam {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+
+        .legend-color.ucs {
+            border-color: #10b981;
+            background: #d1fae5;
+        }
+
+        .legend-color.uph {
+            border-color: #f59e0b;
+            background: #fef3c7;
+        }
+
+        .legend-color.uch {
+            border-color: #8b5cf6;
+            background: #ede9fe;
+        }
+
+        .room-section {
+            margin-bottom: 40px;
+        }
+
+        .room-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .room-title .count {
+            font-size: 14px;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .seats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 12px;
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            border: 2px solid #e2e8f0;
+        }
+
+        .seat-box {
+            background: white;
+            border: 2px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 12px 8px;
+            font-size: 11px;
+            font-weight: 500;
+            color: #1e293b;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+            cursor: pointer;
+            transition: all 0.2s;
+            min-height: 70px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .seat-box:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            border-color: #3b82f6;
+        }
+
+        .seat-box .seat-number {
+            font-weight: 600;
+            color: #3b82f6;
+            font-size: 12px;
+            display: block;
+        }
+
+        .seat-box .student-id {
+            font-size: 10px;
+            color: #1e293b;
+            font-weight: 600;
+        }
+
+        /* Department color coding */
+        .seat-box[data-dept="UAM"] {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+
+        .seat-box[data-dept="UCS"] {
+            border-color: #10b981;
+            background: #d1fae5;
+        }
+
+        .seat-box[data-dept="UPH"] {
+            border-color: #f59e0b;
+            background: #fef3c7;
+        }
+
+        .seat-box[data-dept="UCH"] {
+            border-color: #8b5cf6;
+            background: #ede9fe;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Seating Arrangement</h1>
+            <div class="subtitle">END SEMESTER EXAMINATIONS - DEC 2025</div>
+        </div>
+
+        <!-- Department Legend -->
+        <div class="dept-legend">
+            <div class="legend-item">
+                <div class="legend-color uam"></div>
+                <span>UAM - Applied Mathematics</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color ucs"></div>
+                <span>UCS - Computer Science</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color uph"></div>
+                <span>UPH - Physics</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color uch"></div>
+                <span>UCH - Chemistry</span>
+            </div>
+        </div>
+
+        <!-- Room G05 -->
+        <div class="room-section">
+            <div class="room-title">
+                <span>Room G05</span>
+                <span class="count">30 students</span>
+            </div>
+            <div class="seats-container">
+                <!-- Sample shuffled seating - demonstrating alternating departments -->
+                <div class="seat-box" data-dept="UAM" title="John Doe - UAM">
+                    <span class="seat-number">Seat 1</span>
+                    <span class="student-id">24UAM139</span>
+                </div>
+                <div class="seat-box" data-dept="UCS" title="Alice Johnson - UCS">
+                    <span class="seat-number">Seat 2</span>
+                    <span class="student-id">24UCS101</span>
+                </div>
+                <div class="seat-box" data-dept="UPH" title="Charlie Brown - UPH">
+                    <span class="seat-number">Seat 3</span>
+                    <span class="student-id">24UPH001</span>
+                </div>
+                <div class="seat-box" data-dept="UCH" title="Eve Davis - UCH">
+                    <span class="seat-number">Seat 4</span>
+                    <span class="student-id">24UCH055</span>
+                </div>
+                <div class="seat-box" data-dept="UAM" title="Jane Smith - UAM">
+                    <span class="seat-number">Seat 5</span>
+                    <span class="student-id">24UAM140</span>
+                </div>
+                <div class="seat-box" data-dept="UCS" title="Bob Williams - UCS">
+                    <span class="seat-number">Seat 6</span>
+                    <span class="student-id">24UCS102</span>
+                </div>
+                <div class="seat-box" data-dept="UPH" title="David Lee - UPH">
+                    <span class="seat-number">Seat 7</span>
+                    <span class="student-id">24UPH002</span>
+                </div>
+                <div class="seat-box" data-dept="UCH" title="Frank Miller - UCH">
+                    <span class="seat-number">Seat 8</span>
+                    <span class="student-id">24UCH056</span>
+                </div>
+                <div class="seat-box" data-dept="UCS" title="Alice Johnson - UCS">
+                    <span class="seat-number">Seat 9</span>
+                    <span class="student-id">24UCS103</span>
+                </div>
+                <div class="seat-box" data-dept="UAM" title="Michael Brown - UAM">
+                    <span class="seat-number">Seat 10</span>
+                    <span class="student-id">24UAM141</span>
+                </div>
+                <div class="seat-box" data-dept="UPH" title="Sarah Wilson - UPH">
+                    <span class="seat-number">Seat 11</span>
+                    <span class="student-id">24UPH003</span>
+                </div>
+                <div class="seat-box" data-dept="UCH" title="Tom Anderson - UCH">
+                    <span class="seat-number">Seat 12</span>
+                    <span class="student-id">24UCH057</span>
+                </div>
+                <div class="seat-box" data-dept="UAM" title="Lisa Garcia - UAM">
+                    <span class="seat-number">Seat 13</span>
+                    <span class="student-id">24UAM142</span>
+                </div>
+                <div class="seat-box" data-dept="UCS" title="James Taylor - UCS">
+                    <span class="seat-number">Seat 14</span>
+                    <span class="student-id">24UCS104</span>
+                </div>
+                <div class="seat-box" data-dept="UPH" title="Emma Martinez - UPH">
+                    <span class="seat-number">Seat 15</span>
+                    <span class="student-id">24UPH004</span>
+                </div>
+                <div class="seat-box" data-dept="UCH" title="Daniel White - UCH">
+                    <span class="seat-number">Seat 16</span>
+                    <span class="student-id">24UCH058</span>
+                </div>
+                <div class="seat-box" data-dept="UCS" title="Sophia Harris - UCS">
+                    <span class="seat-number">Seat 17</span>
+                    <span class="student-id">24UCS105</span>
+                </div>
+                <div class="seat-box" data-dept="UAM" title="William Clark - UAM">
+                    <span class="seat-number">Seat 18</span>
+                    <span class="student-id">24UAM143</span>
+                </div>
+                <div class="seat-box" data-dept="UPH" title="Olivia Lewis - UPH">
+                    <span class="seat-number">Seat 19</span>
+                    <span class="student-id">24UPH005</span>
+                </div>
+                <div class="seat-box" data-dept="UCH" title="Benjamin Lee - UCH">
+                    <span class="seat-number">Seat 20</span>
+                    <span class="student-id">24UCH059</span>
+                </div>
+                <div class="seat-box" data-dept="UAM" title="Ava Walker - UAM">
+                    <span class="seat-number">Seat 21</span>
+                    <span class="student-id">24UAM144</span>
+                </div>
+                <div class="seat-box" data-dept="UCS" title="Noah Hall - UCS">
+                    <span class="seat-number">Seat 22</span>
+                    <span class="student-id">24UCS106</span>
+                </div>
+                <div class="seat-box" data-dept="UPH" title="Isabella Allen - UPH">
+                    <span class="seat-number">Seat 23</span>
+                    <span class="student-id">24UPH006</span>
+                </div>
+                <div class="seat-box" data-dept="UCH" title="Lucas Young - UCH">
+                    <span class="seat-number">Seat 24</span>
+                    <span class="student-id">24UCH060</span>
+                </div>
+                <div class="seat-box" data-dept="UCS" title="Mia King - UCS">
+                    <span class="seat-number">Seat 25</span>
+                    <span class="student-id">24UCS107</span>
+                </div>
+                <div class="seat-box" data-dept="UAM" title="Ethan Wright - UAM">
+                    <span class="seat-number">Seat 26</span>
+                    <span class="student-id">24UAM145</span>
+                </div>
+                <div class="seat-box" data-dept="UPH" title="Charlotte Lopez - UPH">
+                    <span class="seat-number">Seat 27</span>
+                    <span class="student-id">24UPH007</span>
+                </div>
+                <div class="seat-box" data-dept="UCH" title="Mason Hill - UCH">
+                    <span class="seat-number">Seat 28</span>
+                    <span class="student-id">24UCH061</span>
+                </div>
+                <div class="seat-box" data-dept="UAM" title="Amelia Scott - UAM">
+                    <span class="seat-number">Seat 29</span>
+                    <span class="student-id">24UAM146</span>
+                </div>
+                <div class="seat-box" data-dept="UCS" title="Liam Green - UCS">
+                    <span class="seat-number">Seat 30</span>
+                    <span class="student-id">24UCS108</span>
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align: center; padding: 20px; color: #64748b; font-size: 14px;">
+            <p>✅ Notice how departments alternate: UAM → UCS → UPH → UCH → UAM...</p>
+            <p>✅ No sequential register numbers sit adjacent (e.g., 24UAM139 and 24UAM140 are separated)</p>
+        </div>
+    </div>
+</body>
+
+</html>

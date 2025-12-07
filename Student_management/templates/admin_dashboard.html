@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Exam Management</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
+
+        body {
+            background: #f5f7fa;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: #1e293b;
+            color: white;
+            padding: 16px 24px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 18px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .floor-selection,
+        .room-grid-view,
+        .seating-visual {
+            background: white;
+            border-radius: 24px;
+            padding: 32px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .view-title {
+            text-align: center;
+            font-size: 24px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 32px;
+        }
+
+        .floor-btn {
+            width: 100%;
+            background: white;
+            border: 1px solid #e2e8f0;
+            padding: 16px 20px;
+            border-radius: 16px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            color: #334155;
+            transition: all 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .floor-btn:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .floor-badge {
+            background: #e2e8f0;
+            color: #64748b;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .back-btn {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #64748b;
+            cursor: pointer;
+            font-size: 24px;
+            padding: 8px;
+        }
+
+        .back-btn:hover {
+            color: #1e293b;
+        }
+
+        .room-grid-header {
+            position: relative;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .room-grid-header h2 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .room-grid-header .subtitle {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #64748b;
+            font-weight: 600;
+            margin-top: 4px;
+        }
+
+        .room-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 80px;
+        }
+
+        .room-card {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 24px 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .room-card:hover {
+            border-color: #cbd5e1;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .room-card.selected {
+            background: #1e293b;
+            border-color: #1e293b;
+            color: white;
+        }
+
+        .room-card .room-number {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .room-card .checkmark {
+            margin-top: 8px;
+            width: 20px;
+            height: 20px;
+            background: #10b981;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+        }
+
+        .bottom-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 16px 24px;
+            border-top: 1px solid #e2e8f0;
+            box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .bottom-bar .info {
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .bottom-bar .ok-btn {
+            background: #1e293b;
+            color: white;
+            border: none;
+            padding: 12px 32px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .bottom-bar .ok-btn:hover {
+            background: #334155;
+            transform: scale(1.02);
+        }
+
+        .admin-controls {
+            margin-top: 32px;
+            padding-top: 32px;
+            border-top: 2px solid #e2e8f0;
+        }
+
+        .admin-controls h3 {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #64748b;
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
+
+        .admin-controls .form-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .admin-controls input {
+            flex: 1;
+            padding: 10px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .admin-controls button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .admin-controls button:hover {
+            background: #2563eb;
+        }
+
+        .admin-controls .action-btn {
+            width: 100%;
+            background: #1e293b;
+            padding: 12px;
+            margin-top: 8px;
+        }
+
+        .admin-controls .action-btn:hover {
+            background: #334155;
+        }
+
+        /* Visual Seating Layout */
+        .seating-visual {
+            max-width: 1200px;
+            margin: 40px auto;
+        }
+
+        .seating-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .seating-header h2 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .seating-header .stats {
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .room-section {
+            margin-bottom: 40px;
+            padding: 24px;
+            background: #f8fafc;
+            border-radius: 16px;
+        }
+
+        .room-section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .room-section-title .count {
+            font-size: 14px;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .seats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 12px;
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            border: 2px solid #e2e8f0;
+        }
+
+        .seat-box {
+            background: white;
+            border: 2px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 12px 8px;
+            font-size: 11px;
+            font-weight: 500;
+            color: #1e293b;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+            cursor: pointer;
+            transition: all 0.2s;
+            min-height: 70px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .seat-box:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            border-color: #3b82f6;
+        }
+
+        .seat-box .seat-number {
+            font-weight: 600;
+            color: #3b82f6;
+            font-size: 12px;
+            display: block;
+        }
+
+        .seat-box .student-id {
+            font-size: 10px;
+            color: #1e293b;
+            font-weight: 600;
+        }
+
+        /* Department color coding */
+        .seat-box[data-dept="UAM"] {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+
+        .seat-box[data-dept="UCS"] {
+            border-color: #10b981;
+            background: #d1fae5;
+        }
+
+        .seat-box[data-dept="UPH"] {
+            border-color: #f59e0b;
+            background: #fef3c7;
+        }
+
+        .seat-box[data-dept="UCH"] {
+            border-color: #8b5cf6;
+            background: #ede9fe;
+        }
+
+        .seat-box[data-dept="UEC"] {
+            border-color: #ec4899;
+            background: #fce7f3;
+        }
+
+        .seat-box[data-dept="UAD"] {
+            border-color: #06b6d4;
+            background: #cffafe;
+        }
+
+        /* Department Legend */
+        .dept-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            padding: 16px 24px;
+            background: #f8fafc;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            justify-content: center;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .legend-color {
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            border: 2px solid;
+        }
+
+        .legend-color.uam {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+
+        .legend-color.ucs {
+            border-color: #10b981;
+            background: #d1fae5;
+        }
+
+        .legend-color.uph {
+            border-color: #f59e0b;
+            background: #fef3c7;
+        }
+
+        .legend-color.uch {
+            border-color: #8b5cf6;
+            background: #ede9fe;
+        }
+
+        .legend-color.uec {
+            border-color: #ec4899;
+            background: #fce7f3;
+        }
+
+        .legend-color.uad {
+            border-color: #06b6d4;
+            background: #cffafe;
+        }
+
+        .message {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .message.success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .message.error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #64748b;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header" style="display: flex; justify-content: space-between; align-items: center; padding: 0 32px;">
+        <div>EXAM MANAGEMENT SYSTEM</div>
+        <div style="display: flex; gap: 16px; align-items: center;">
+            <select id="examTypeSelector"
+                style="padding: 8px 16px; border: 2px solid white; border-radius: 6px; background: rgba(255,255,255,0.2); color: white; font-size: 14px; font-weight: 600; cursor: pointer;">
+                <option value="end_semester" style="color: #1e293b;">End Semester Exam</option>
+                <option value="arrear" style="color: #1e293b;">Arrear Exam</option>
+                <option value="internal" style="color: #1e293b;">Internal Exam</option>
+            </select>
+            <button onclick="logout()"
+                style="padding: 8px 20px; background: #ef4444; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; transition: all 0.2s;"
+                onmouseover="this.style.background='#dc2626'" onmouseout="this.style.background='#ef4444'">
+                🚪 Logout
+            </button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div id="message" class="message"></div>
+
+        <!-- Floor Selection View -->
+        <div id="floorView" class="floor-selection">
+            <h2 class="view-title">Which floor?</h2>
+            <div id="floorButtons"></div>
+
+            <!-- Admin Controls -->
+            <div class="admin-controls">
+                <h3>Admin Controls</h3>
+                <button class="action-btn" onclick="document.getElementById('csvFile').click()">
+                    📤 Upload Student CSV
+                </button>
+                <input type="file" id="csvFile" accept=".csv" style="display: none;" onchange="uploadCSV()" />
+                <button class="action-btn" onclick="generateSeating()">🎯 Generate Seating Plan</button>
+                <button class="action-btn" onclick="refreshAllocation()" style="background: #f59e0b;">
+                    🔄 Refresh Allocation
+                </button>
+                <button class="action-btn" onclick="viewSeatingLayout()" style="background: #10b981;">
+                    👁️ View Seating Layout
+                </button>
+            </div>
+        </div>
+
+        <!-- Room Grid View -->
+        <div id="roomView" class="room-grid-view hidden">
+            <div class="room-grid-header">
+                <button class="back-btn" onclick="backToFloors()">←</button>
+                <h2 id="floorTitle">Floor 2</h2>
+                <div class="subtitle" id="selectedCount">2 SELECTED</div>
+            </div>
+            <div id="roomGrid" class="room-grid"></div>
+        </div>
+    </div>
+
+    <!-- Bottom Bar (only shown in room view) -->
+    <div id="bottomBar" class="bottom-bar hidden">
+        <span class="info">Block <span id="blockCount">0</span> halls?</span>
+        <button class="ok-btn" onclick="backToFloors()">OK</button>
+    </div>
+
+    <!-- Visual Seating Layout -->
+    <div id="seatingView" class="seating-visual hidden">
+        <div class="seating-header">
+            <button class="back-btn" onclick="backToFloors()" style="position: static; transform: none;">← Back</button>
+            <h2>Seating Arrangement</h2>
+            <div class="stats">
+                <span id="totalAllocated">0 students allocated</span>
+            </div>
+        </div>
+
+        <!-- Department Legend -->
+        <div class="dept-legend">
+            <div class="legend-item">
+                <div class="legend-color uam"></div>
+                <span>UAM - Applied Mathematics</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color ucs"></div>
+                <span>UCS - Computer Science</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color uph"></div>
+                <span>UPH - Physics</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color uch"></div>
+                <span>UCH - Chemistry</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color uec"></div>
+                <span>UEC - Electronics</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color uad"></div>
+                <span>UAD - Other Departments</span>
+            </div>
+        </div>
+
+        <div id="seatingContent" class="loading">Loading seating data...</div>
+    </div>
+
+    <script>
+        let rooms = [];
+        let currentFloor = null;
+        let seatingData = null;
+
+        // Load rooms on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            loadRooms();
+        });
+
+        function showMessage(text, type) {
+            const msg = document.getElementById('message');
+            msg.textContent = text;
+            msg.className = `message ${type}`;
+            msg.style.display = 'block';
+            setTimeout(() => msg.style.display = 'none', 5000);
+        }
+
+        async function loadRooms() {
+            try {
+                const response = await fetch('/api/admin/rooms/', {
+                    credentials: 'include'
+                });
+                const data = await response.json();
+                if (data.success) {
+                    rooms = data.data;
+                    renderFloors();
+                }
+            } catch (error) {
+                showMessage('Failed to load rooms', 'error');
+            }
+        }
+
+        function renderFloors() {
+            const floorMap = { 'G': 'Ground', '1': '1st', '2': '2nd', '3': '3rd', '4': '4th', '5': '5th' };
+            const floors = ['G', '1', '2', '3', '4', '5'];
+            const container = document.getElementById('floorButtons');
+            container.innerHTML = '';
+
+            if (rooms.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #64748b; padding: 20px;">No rooms found. Run setup_rooms.py to create default rooms.</p>';
+                return;
+            }
+
+            floors.forEach(floor => {
+                const floorRooms = rooms.filter(r => r.room_number.startsWith(floor));
+                if (floorRooms.length === 0) return;
+
+                const selectedCount = floorRooms.filter(r => r.is_available).length;
+
+                const btn = document.createElement('button');
+                btn.className = 'floor-btn';
+                btn.onclick = () => showFloor(floor);
+                btn.innerHTML = `
+                    <span>${floorMap[floor] || floor} Floor</span>
+                    <span class="floor-badge">${selectedCount}/${floorRooms.length} Selected</span>
+                `;
+                container.appendChild(btn);
+            });
+        }
+
+        function showFloor(floor) {
+            currentFloor = floor;
+            const floorRooms = rooms.filter(r => r.room_number.startsWith(floor));
+            const selectedCount = floorRooms.filter(r => r.is_available).length;
+
+            const floorMap = { 'G': 'Ground', '1': '1st', '2': '2nd', '3': '3rd', '4': '4th', '5': '5th' };
+            document.getElementById('floorTitle').textContent = `${floorMap[floor] || floor} Floor`;
+            document.getElementById('selectedCount').textContent = `${selectedCount} SELECTED`;
+            document.getElementById('blockCount').textContent = selectedCount;
+
+            const grid = document.getElementById('roomGrid');
+            grid.innerHTML = '';
+
+            floorRooms.forEach(room => {
+                const card = document.createElement('div');
+                card.className = `room-card ${room.is_available ? 'selected' : ''}`;
+                card.onclick = () => toggleRoom(room.id);
+                card.innerHTML = `
+                    <div class="room-number">${room.room_number}</div>
+                    ${room.is_available ? '<div class="checkmark">✓</div>' : ''}
+                `;
+                grid.appendChild(card);
+            });
+
+            document.getElementById('floorView').classList.add('hidden');
+            document.getElementById('roomView').classList.remove('hidden');
+            document.getElementById('bottomBar').classList.remove('hidden');
+        }
+
+        function backToFloors() {
+            document.getElementById('floorView').classList.remove('hidden');
+            document.getElementById('roomView').classList.add('hidden');
+            document.getElementById('seatingView').classList.add('hidden');
+            document.getElementById('bottomBar').classList.add('hidden');
+            currentFloor = null;
+            renderFloors();
+        }
+
+        async function toggleRoom(roomId) {
+            try {
+                const response = await fetch(`/api/admin/rooms/${roomId}/toggle/`, {
+                    method: 'POST',
+                    credentials: 'include'
+                });
+                const data = await response.json();
+                if (data.success) {
+                    const room = rooms.find(r => r.id === roomId);
+                    if (room) {
+                        room.is_available = data.data.is_available;
+                        showFloor(currentFloor);
+                    }
+                }
+            } catch (error) {
+                showMessage('Failed to toggle room', 'error');
+            }
+        }
+
+        async function uploadCSV() {
+            const fileInput = document.getElementById('csvFile');
+            const file = fileInput.files[0];
+            if (!file) return;
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            try {
+                const response = await fetch('/api/admin/upload/', {
+                    method: 'POST',
+                    credentials: 'include',
+                    body: formData
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    showMessage(data.message || 'CSV uploaded successfully', 'success');
+                } else {
+                    showMessage(data.error || 'Upload failed', 'error');
+                }
+            } catch (error) {
+                showMessage('Network error', 'error');
+            }
+
+            fileInput.value = '';
+        }
+
+        async function generateSeating() {
+            if (!confirm('Generate seating arrangement for all selected rooms?')) return;
+
+            try {
+                const response = await fetch('/api/admin/generate-seating/', {
+                    method: 'POST',
+                    credentials: 'include'
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    showMessage(data.message || 'Seating generated successfully', 'success');
+                    seatingData = data.data;
+                    setTimeout(() => viewSeatingLayout(), 1000);
+                } else {
+                    showMessage(data.error || 'Generation failed', 'error');
+                }
+            } catch (error) {
+                showMessage('Network error', 'error');
+            }
+        }
+
+        async function refreshAllocation() {
+            if (!confirm('This will clear all existing allocations and regenerate new ones. Continue?')) return;
+
+            try {
+                const response = await fetch('/api/admin/refresh-allocation/', {
+                    method: 'POST',
+                    credentials: 'include'
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    showMessage(data.message || 'Allocation refreshed successfully', 'success');
+                    seatingData = data.data;
+                    setTimeout(() => viewSeatingLayout(), 1000);
+                } else {
+                    showMessage(data.error || 'Refresh failed', 'error');
+                }
+            } catch (error) {
+                showMessage('Network error', 'error');
+            }
+        }
+
+        async function viewSeatingLayout() {
+            document.getElementById('floorView').classList.add('hidden');
+            document.getElementById('roomView').classList.add('hidden');
+            document.getElementById('seatingView').classList.remove('hidden');
+
+            const content = document.getElementById('seatingContent');
+            content.innerHTML = '<div class="loading">Loading seating data...</div>';
+
+            try {
+                const response = await fetch('/api/admin/records/', {
+                    credentials: 'include'
+                });
+                const data = await response.json();
+
+                if (data.success && data.data.length > 0) {
+                    renderSeatingLayout(data.data);
+                } else {
+                    content.innerHTML = '<div class="loading">No seating data available. Please generate seating first.</div>';
+                }
+            } catch (error) {
+                content.innerHTML = '<div class="loading">Failed to load seating data.</div>';
+            }
+        }
+
+        function renderSeatingLayout(records) {
+            const content = document.getElementById('seatingContent');
+            document.getElementById('totalAllocated').textContent = `${records.length} students allocated`;
+
+            // Group by room
+            const roomGroups = {};
+            records.forEach(record => {
+                const room = record.exam_hall_number;
+                if (!roomGroups[room]) roomGroups[room] = [];
+                roomGroups[room].push(record);
+            });
+
+            content.innerHTML = '';
+
+            Object.keys(roomGroups).sort().forEach(roomName => {
+                const students = roomGroups[roomName];
+                const section = document.createElement('div');
+                section.className = 'room-section';
+
+                // Calculate department counts for this room
+                const deptCounts = {};
+                students.forEach(student => {
+                    const dept = student.course_code;
+                    deptCounts[dept] = (deptCounts[dept] || 0) + 1;
+                });
+
+                // Create department stats string (e.g., "UAM=30, UCS=40")
+                const deptStats = Object.keys(deptCounts)
+                    .sort()
+                    .map(dept => `${dept}=${deptCounts[dept]}`)
+                    .join(', ');
+
+                section.innerHTML = `
+                    <div class="room-section-title">
+                        <span>Room ${roomName}</span>
+                        <span class="count">${students.length} students</span>
+                    </div>
+                    <div style="text-align: center; color: #64748b; font-size: 13px; margin-bottom: 16px; font-weight: 500;">
+                        📊 ${deptStats}
+                    </div>
+                    <div class="seats-container" id="room-${roomName}"></div>
+                `;
+
+                content.appendChild(section);
+
+                // Create grid-based seat layout
+                const container = document.getElementById(`room-${roomName}`);
+
+                // Sort students by seat number for proper display
+                students.sort((a, b) => parseInt(a.exam_seat_number) - parseInt(b.exam_seat_number));
+
+                students.forEach((student) => {
+                    const seat = document.createElement('div');
+                    seat.className = 'seat-box';
+                    seat.setAttribute('data-dept', student.course_code);
+
+                    seat.innerHTML = `
+                        <span class="seat-number">Seat ${student.exam_seat_number}</span>
+                        <span class="student-id">${student.register_no}</span>
+                    `;
+
+                    seat.title = `${student.student_name}\nCourse: ${student.course_code}\nSeat: ${student.exam_seat_number}`;
+                    container.appendChild(seat);
+                });
+            });
+        }
+
+        // Logout function
+        async function logout() {
+            if (!confirm('Are you sure you want to logout?')) return;
+
+            try {
+                const response = await fetch('/api/admin/logout/', {
+                    method: 'POST',
+                    credentials: 'include'
+                });
+
+                if (response.ok) {
+                    window.location.href = '/';
+                } else {
+                    alert('Logout failed');
+                }
+            } catch (error) {
+                console.error('Logout error:', error);
+                alert('Logout failed');
+            }
+        }
+
+        // Store selected exam type
+        let currentExamType = 'end_semester';
+
+        // Handle exam type change
+        document.addEventListener('DOMContentLoaded', function () {
+            const examTypeSelector = document.getElementById('examTypeSelector');
+            if (examTypeSelector) {
+                examTypeSelector.addEventListener('change', function () {
+                    currentExamType = this.value;
+                    const examNames = {
+                        'end_semester': 'End Semester Exam',
+                        'arrear': 'Arrear Exam',
+                        'internal': 'Internal Exam'
+                    };
+                    console.log(`Exam type changed to: ${examNames[currentExamType]}`);
+                    // You can add logic here to filter records by exam type if needed
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

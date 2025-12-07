@@ -1,0 +1,59 @@
+================================================================================
+TESTING ADVANCED SHUFFLING ALGORITHM
+================================================================================
+
+📊 Total Students: 158
+
+📚 Department Distribution:
+   UAM: 32 students
+   UCH: 27 students
+   UCS: 42 students
+   UEC: 25 students
+   UPH: 32 students
+
+🔀 Shuffling students...
+
+✅ Shuffled 158 students
+
+📋 First 20 seats (showing alternating pattern):
+Seat   Register No     Course     Student Name             
+--------------------------------------------------------------------------------
+1      24UAM101        UAM        Anika Sharma             
+2      24UCH055        UCH        Eve Davis                
+3      24UCS101        UCS        Alice Johnson            
+4      24UEC101        UEC        Nisha Tiwari             
+5      24UPH001        UPH        Charlie Brown            
+6      24UAM102        UAM        Shaurya Reddy            
+7      24UCH056        UCH        Frank Miller             
+8      24UCS101        UCS        Krishna Kumar            
+9      24UEC102        UEC        Nisha Mehta              
+10     24UPH002        UPH        David Lee                
+11     24UAM103        UAM        Kavya Jain               
+12     24UCH101        UCH        Navya Tiwari             
+13     24UCS102        UCS        Bob Williams             
+14     24UEC103        UEC        Zara Verma               
+15     24UPH101        UPH        Aaradhya Sharma          
+16     24UAM104        UAM        Aarohi Sinha             
+17     24UCH102        UCH        Ayaan Pillai             
+18     24UCS102        UCS        Tara Verma               
+19     24UEC104        UEC        Anika Desai              
+20     24UPH102        UPH        Arnav Reddy              
+
+🔍 Checking for sequential register numbers...
+   ⚠️  Sequential found: 24UCS131 → 24UCS132 at positions 149, 150
+   ⚠️  Sequential found: 24UCS132 → 24UCS133 at positions 150, 151
+   ⚠️  Sequential found: 24UCS133 → 24UCS134 at positions 151, 152
+   ⚠️  Sequential found: 24UCS134 → 24UCS135 at positions 152, 153
+   ⚠️  Sequential found: 24UCS135 → 24UCS136 at positions 153, 154
+   ⚠️  Sequential found: 24UCS136 → 24UCS137 at positions 154, 155
+   ⚠️  Sequential found: 24UCS137 → 24UCS138 at positions 155, 156
+   ⚠️  Sequential found: 24UCS138 → 24UCS139 at positions 156, 157
+   ⚠️  Sequential found: 24UCS139 → 24UCS140 at positions 157, 158
+
+🔄 Checking department alternation pattern...
+   Alternation Rate: 94.3%
+   ✅ Good alternation pattern!
+
+================================================================================
+TEST COMPLETE
+================================================================================

@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Faculty, Student & Examiner Login</title>
+<style>
+  /* Global reset */
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: "Poppins", sans-serif;
+  }
+
+  body {
+    background: url("https://www.kgkite.ac.in/wp-content/uploads/2021/05/infra-gal-large6.jpg?x92953") no-repeat center center/cover;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  /* Glass Box Style */
+  .container {
+    width: 400px;
+    padding: 35px;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-color: rgb(24, 12, 126);
+    border-width: 5px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(30px);
+    box-shadow: 0 10px 30px rgba(150, 12, 76, 0.25);
+    text-align: center;
+    color: #fff;
+    transition: all 0.5s ease;
+  }
+
+  .container:hover {
+    transform: scale(1.02);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.3);
+  }
+
+  h2 {
+    font-size: 1.8em;
+    margin-bottom: 20px;
+    letter-spacing: 1px;
+  }
+
+  .button-group {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    border-radius: 15px;
+    margin-bottom: 25px;
+  }
+
+  .button-group button {
+    background: transparent;
+    border: 2px solid #fff;
+    border-radius: 10px;
+    padding: 8px 18px;
+    color: #fff;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
+  .button-group button.active,
+  .button-group button:hover {
+    background: #fff;
+    color: #333;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
+  }
+
+  form {
+    display: none;
+    animation: fadeSlide 0.6s ease forwards;
+  }
+
+  @keyframes fadeSlide {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  form.active {
+    display: block;
+  }
+
+  form h3 {
+    margin-bottom: 15px;
+    font-weight: 500;
+    color: #fff;
+  }
+
+  input {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.9);
+    color: #333;
+    font-size: 1em;
+    transition: all 0.3s ease;
+  }
+
+  input:focus {
+    background: #fff;
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
+  }
+
+  button.login-btn {
+    margin-top: 10px;
+    background: #fff;
+    color: #333;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 20px;
+    width: 100%;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
+  button.login-btn:hover {
+    background: #007bff;
+    color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.6);
+  }
+
+  .error-message {
+    color: #ff6b6b;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 10px;
+    font-size: 0.9em;
+    display: none;
+  }
+
+  .success-message {
+    color: #51cf66;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 10px;
+    font-size: 0.9em;
+    display: none;
+  }
+
+  .student-result {
+    margin-top: 20px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 10px;
+    color: #333;
+    text-align: left;
+    display: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    animation: slideDown 0.5s ease;
+  }
+
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .student-result h4 {
+    margin-bottom: 15px;
+    color: rgb(23, 7, 94);
+    font-size: 1.3em;
+    text-align: center;
+    padding-bottom: 10px;
+    border-bottom: 2px solid rgb(23, 7, 94);
+  }
+
+  .student-result p {
+    margin: 8px 0;
+    padding: 5px;
+    background: rgba(102, 126, 234, 0.1);
+    border-radius: 5px;
+    padding-left: 10px;
+  }
+
+  .student-result strong {
+    color: rgb(23, 7, 94);
+    display: inline-block;
+    min-width: 140px;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h2 style="color: rgb(23, 7, 94);">SinthanAI Login Portal</h2>
+  <div class="button-group">
+    <button id="facultyBtn" class="active">Faculty</button>
+    <button id="studentBtn">Student</button>
+    <button id="adminBtn">Admin</button>
+  </div>
+
+  <!-- Faculty Login -->
+  <form id="facultyForm" class="active">
+    <h3>Faculty Login</h3>
+    <input type="text" id="facultyId" placeholder="Faculty_id" required>
+    <input type="password" id="facultyPassword" placeholder="Password" required>
+    <div class="error-message" id="facultyError"></div>
+    <button type="button" class="login-btn" onclick="handleFacultyLogin()">Login</button>
+  </form>
+
+  <!-- Student Login -->
+  <form id="studentForm">
+    <h3>Student Login</h3>
+    <input type="text" id="registerNo" placeholder="Register Number" required>
+    <input type="date" id="dateOfBirth" required>
+    <div class="error-message" id="studentError"></div>
+    <div class="success-message" id="studentSuccess"></div>
+    <button type="button" class="login-btn" onclick="handleStudentLogin()">Login</button>
+    <div class="student-result" id="studentResult">
+      <h4>Your Exam Details</h4>
+      <p><strong>Register Number:</strong> <span id="resultRegisterNo"></span></p>
+      <p><strong>Student Name:</strong> <span id="resultStudentName"></span></p>
+      <p><strong>Course Code:</strong> <span id="resultCourseCode"></span></p>
+      <p><strong>Course Title:</strong> <span id="resultCourseTitle"></span></p>
+      <p><strong>Exam Date:</strong> <span id="resultExamDate"></span></p>
+      <p><strong>Exam Session:</strong> <span id="resultExamSession"></span></p>
+      <p><strong>Hall Number:</strong> <span id="resultHallNumber"></span></p>
+      <p><strong>Seat Number:</strong> <span id="resultSeatNumber"></span></p>
+    </div>
+  </form>
+
+  <!-- Admin Login -->
+  <form id="adminForm">
+    <h3>Admin Login</h3>
+    <input type="text" id="adminUsername" placeholder="Admin ID" required>
+    <input type="password" id="adminPassword" placeholder="Password" required>
+    <div class="error-message" id="adminError"></div>
+    <button type="button" class="login-btn" onclick="handleAdminLogin()">Login</button>
+  </form>
+</div>
+
+<script>
+  const facultyBtn = document.getElementById('facultyBtn');
+  const studentBtn = document.getElementById('studentBtn');
+  const adminBtn = document.getElementById('adminBtn');
+  const facultyForm = document.getElementById('facultyForm');
+  const studentForm = document.getElementById('studentForm');
+  const adminForm = document.getElementById('adminForm');
+
+  function activateForm(formToShow, btnToActivate) {
+    // Hide all forms
+    [facultyForm, studentForm, adminForm].forEach(form => form.classList.remove('active'));
+    // Deactivate all buttons
+    [facultyBtn, studentBtn, adminBtn].forEach(btn => btn.classList.remove('active'));
+    // Activate selected form and button
+    formToShow.classList.add('active');
+    btnToActivate.classList.add('active');
+    // Clear error messages and success messages
+    document.querySelectorAll('.error-message').forEach(el => el.style.display = 'none');
+    document.querySelectorAll('.success-message').forEach(el => el.style.display = 'none');
+    document.getElementById('studentResult').style.display = 'none';
+  }
+
+  facultyBtn.addEventListener('click', () => activateForm(facultyForm, facultyBtn));
+  studentBtn.addEventListener('click', () => activateForm(studentForm, studentBtn));
+  adminBtn.addEventListener('click', () => activateForm(adminForm, adminBtn));
+
+  function showError(formId, message) {
+    const errorEl = document.getElementById(formId);
+    errorEl.textContent = message;
+    errorEl.style.display = 'block';
+  }
+
+  function hideError(formId) {
+    document.getElementById(formId).style.display = 'none';
+  }
+
+  async function handleStudentLogin() {
+    const registerNo = document.getElementById('registerNo').value.trim();
+    const dateOfBirth = document.getElementById('dateOfBirth').value;
+
+    hideError('studentError');
+    document.getElementById('studentResult').style.display = 'none';
+
+    if (!registerNo || !dateOfBirth) {
+      showError('studentError', 'Please fill in all fields');
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/student/login/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          register_no: registerNo,
+          date_of_birth: dateOfBirth
+        })
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Hide any previous errors
+        hideError('studentError');
+        
+        // Display success message
+        const successEl = document.getElementById('studentSuccess');
+        successEl.textContent = '✓ Login successful! Your exam details are shown below.';
+        successEl.style.display = 'block';
+        
+        // Format exam date for better display
+        const examDate = new Date(data.data.exam_date);
+        const formattedDate = examDate.toLocaleDateString('en-US', { 
+          year: 'numeric', 
+          month: 'long', 
+          day: 'numeric' 
+        });
+        
+        // Display student data
+        document.getElementById('resultRegisterNo').textContent = data.data.register_no;
+        document.getElementById('resultStudentName').textContent = data.data.student_name;
+        document.getElementById('resultCourseCode').textContent = data.data.course_code;
+        document.getElementById('resultCourseTitle').textContent = data.data.course_title;
+        document.getElementById('resultExamDate').textContent = formattedDate;
+        document.getElementById('resultExamSession').textContent = data.data.exam_session;
+        document.getElementById('resultHallNumber').textContent = data.data.exam_hall_number;
+        document.getElementById('resultSeatNumber').textContent = data.data.exam_seat_number;
+        
+        // Show the result section
+        document.getElementById('studentResult').style.display = 'block';
+        
+        // Scroll to result smoothly
+        document.getElementById('studentResult').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      } else {
+        hideError('studentError');
+        showError('studentError', data.error || 'Login failed');
+        document.getElementById('studentSuccess').style.display = 'none';
+      }
+    } catch (error) {
+      showError('studentError', 'Network error. Please try again.');
+      console.error('Error:', error);
+    }
+  }
+
+  async function handleAdminLogin() {
+    const username = document.getElementById('adminUsername').value.trim();
+    const password = document.getElementById('adminPassword').value;
+
+    hideError('adminError');
+
+    if (!username || !password) {
+      showError('adminError', 'Please fill in all fields');
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/admin/login/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          username: username,
+          password: password
+        })
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        window.location.href = data.redirect_url || '/api/admin/dashboard/';
+      } else {
+        showError('adminError', data.error || 'Invalid credentials');
+      }
+    } catch (error) {
+      showError('adminError', 'Network error. Please try again.');
+      console.error('Error:', error);
+    }
+  }
+
+  function handleFacultyLogin() {
+    showError('facultyError', 'Faculty login not implemented yet');
+  }
+
+  // Allow Enter key to submit forms
+  document.getElementById('registerNo').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') handleStudentLogin();
+  });
+  document.getElementById('dateOfBirth').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') handleStudentLogin();
+  });
+  document.getElementById('adminUsername').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') handleAdminLogin();
+  });
+  document.getElementById('adminPassword').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') handleAdminLogin();
+  });
+</script>
+
+</body>
+</html>
+
+
